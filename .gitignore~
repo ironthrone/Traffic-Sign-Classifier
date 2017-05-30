@@ -1,6 +1,6 @@
-data/
+data
 .ipynb_checkpoints
 *.h5
+models
 *.swp
 *.p
-LeNet*.png
