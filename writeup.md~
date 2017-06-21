@@ -1,11 +1,11 @@
 #**Traffic Sign Recognition** 
 
-
 ---
 
 **Build a Traffic Sign Recognition Project**
 
 The goals / steps of this project are the following:
+
 * Load the data set (see below for links to the project data set)
 * Explore, summarize and visualize the data set
 * Design, train and test a model architecture
@@ -16,17 +16,15 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[distribution]: ./output_images/distribution.png 
-[balanced]: ./output_images/balanced_distribution.png
-[random]: ./output_images/random_images.png
-[image2]: ./examples/grayscale.jpg 
-[augment]: ./output_images/augment_images.png 
-
-[lossCurve]: ./output_images/LeNet_001_100_30.png
-
-[newImages]: ./output_images/new_test_images.png
-[softmax]: ./output_images/new_images_softmax.png
-
+[image0]: ./distributionAlongClass.png "Distribution"
+[image1]: ./randomImages.png "Random"
+[image2]: ./examples/grayscale.jpg "Grayscaling"
+[image3]: ./examples/random_noise.jpg "Random Noise"
+[image4]: ./new_images/aheadonly.jpg "Traffic Sign 1"
+[image5]: ./new_images/childrencross.jpg "Traffic Sign 2"
+[image6]: ./new_images/normalcaution.jpg "Traffic Sign 3"
+[image7]: ./new_images/priorityroad.jpg "Traffic Sign 4"
+[image8]: ./new_images/stop.jpg "Traffic Sign 5"
 
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
@@ -60,41 +58,38 @@ I check the dataset use normal python function,they include:
 
 The code for this step is contained in the third and forth code cell of the IPython notebook.  
 
-First I use matplotlib visualize the training and validation set's distribution along class.I notice these distribution is very uneven,i think it has a impact to the trianed model
-![][distribution]
+First I use matplotlib visualize the training and validation set's distribution along class.I notice these distribution is very uneven,i think it has a impact to the trianed model,but i have not find a method to deal with it .
+![alt text][image0]
 
 Then i random select nine images from training set and show them,to get a intuition impression to the dateset
-![][random]
+![alt text][image1]
 
 ###Design and Test a Model Architecture
 
 ####1. Describe how, and identify where in your code, you preprocessed the image data. What tecniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc.
 
-The code for this step is contained in the 6th ,7th code cell of the IPython notebook.
+The code for this step is contained in the fifth code cell of the IPython notebook.
 I did not grayscale the image ,because i notice the trainning result did not have much improvement
 
-I  normalize the data set to the  range [-1,1], it will accelerate the training process.
+I  normalize the training, validation and test set.After this feature value locates in  a range [0,1], it will accelerate the training process.
+
 
 ####2. Describe how, and identify where in your code, you set up training, validation and testing data. How much data was in each set? Explain what techniques were used to split the data into these sets. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, identify where in your code, and provide example images of the additional data)
 
-The code located in the 7th ~ 9th cell. Because of the data set is very unbalanced among different classed,so  i select a balanced data set ,where every class have 250 sample
-![][balanced]
-In  the training process,my model only get a 80+% valid accuracy,so i decide to augment the data set. These augment data are:
+I just use the provided training ,validation,test set my final dateset.My final training set had 34799 number of images. My validation set and test set had 4410 and 12630 number of images.
 
-*  openCV to random rotated image between -15 and 15 degree
-*  skimage.exposure.rescale_intensity to add contrasted image
-*  openCV to scaled image
+Then i augmented the trainning set ,it is in the sixth code cell of the IPython notebook. Because i want to decrease the gap between the training error and validation error ,prevent overfit . 
 
-Then i use sklean train_test_split split the data to 6:2:2 ,where training data is 6,valid and test are 2
-Thus i got 27520 train image, 6880 valid iamge, 8600 test image
+I use skimage.transform to add a rotated image for every image in the origin trainning set,the angle is located randomly betwwen -15 and 15，it results a doubled training set.
 
-Here is an example of an original image and its augmented image:
+Here is an example of an original image and an augmented image:
 
-![alt text][augment]
+![alt text][image3]
+
 
 ####3. Describe, and identify where in your code, what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
-The code for my final model is located in the 10th cell of the ipython notebook. 
+The code for my final model is located in the seventh cell of the ipython notebook. 
 
 I just select the LeCun model,after argumenting train set and tune parameters it get a 93% accuracy on validation set,so it also is my   final model:
 
@@ -115,82 +110,78 @@ I just select the LeCun model,after argumenting train set and tune parameters it
 |RELU||
 |Drop out | 0.75 |
 |Fully connected | 84--> 43|
+ 
+
 
 ####4. Describe how, and identify where in your code, you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
-This step located in the eigth ,12,13,14 cell
 
-Optimizer is AdamOptimizer, batch size is 100,epochs is 30, learning rate is 0.001.I explain how i select these value in the next item
+This step located in the eigth ,ninth,tenth ,tweleth cell
+
+Optimizer is AdamOptimizer, batch size is 100,epochs is 30, learning rate is 0.001.
+
+
 ####5. Describe the approach taken for finding a solution. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
-The code  is located in the12,13,14 cell of the Ipython notebook.
+The code  is located in the tenth,eleventh, twelvth cell of the Ipython notebook.
 
 My final model results were:
-
-* training set accuracy : 99%
-* validation set accuracy : 98%
-* test set accuracy : 97%
-
-It has been improved a lot compare to my  first sumbit:
 
 * training set accuracy : 98%
 * validation set accuracy : 95%
 * test set accuracy : 90%
 
-
-This is what i do before my first submit ,the process that i took can be summaried to two step:
+The process that i took can be summaried to three step:
 1. determine batch size,epoch,learning rate to make the model get nearly 100% accuracy on train data;
 2. use dropout, argumenting train data to get the model achieve more than 93% accuracy on validation data
 
 The traffic classifer problem is like recognizing hand written digits,but its has more classes,so I decided to select LeCun network as the start model, when it is not fitable i will adjust it .
 The first step is to get a nearly 100% train accuracy. I tried 10,20,30 as epoch,0.0005,0.0008,0.001 as learning rate, 50,100,200 as batch size.Then i select epoch = 30,learning rate = 0.001,batch size = 128,and got a result of 99% train accuracy and 92% validation accuracy.
 
-I think it is time to prevent overfit ,namely to increase validation accuracy .First i decided to determine dropout ,and tried 0.5,0.6 and 0.75, based on accuracy and time  i select 0.75.Then i  argumented train set,i just randomly rotated every image between 0 and 360 degree.But the validation accuracy is not improved.After talking with classmates,i change the ratating scope to -15 and 15 degree,and get a 95% validation accuracy. Now i  got 98% train accuracy and 95% validation accuracy. I think it is enough.
+I think it is time to prevent overfit ,namely to increase validation validation accuracy .First i decided to determine dropout ,and tried 0.5,0.6 and 0.75, based on accuracy and time  i select 0.75.Then i  argumented train set,i just randomly rotated every image between 0 and 360 degree.But the validation accuracy is not improved.After talking with classmates,i change the ratating scope to -15 and 15 degree,and get a 95% validation accuracy. Now i  got 98% train accuracy and 95% validation accuracy. I think it is enough.
 
-Then after first submit  failed ,i selected a balanced train set, like above mentioned. The time i did not tune the parameter, just augment data.
-Like my first submit data, at first i only add rotate image to  the new balanced data set only have a 83% validation accuracy. Then i add contrast image using skimage.exposure.rescale_intensity(), and resized image ,finally my model get a 99% training accuracy,98% valid accuracy,98% test accuracy
-
-![][lossCurve]
+After all the steps ,my final architecture is just LeCun Model，learning rate = 0.001，batch size = 100,epoch = 30,dropout = 0.75
 
 
 ###Test a Model on New Images
 
 ####1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
 
-Code is located in 15,16,17 cell
-Here are five German traffic signs that I found from google streetview :
-![][newImages]
+Here are five German traffic signs that I found on the web:
 
-These feature may be a challenge to my model
-
-* For image 1,3,4,5,they are all inclined
-* traffic sign in image 2 not located in the middle of the image
-* Image 3 is obscure
+![alt text][image4] ![alt text][image5] ![alt text][image6] 
+![alt text][image7] ![alt text][image8]
 
 
 ####2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. Identify where in your code predictions were made. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
 
-The code for making predictions on test data is located in the 12th cell of the Ipython notebook. My test set get a 98% accuracy
+The code for making predictions on test data is located in the 12th cell of the Ipython notebook.
+But on the test set ,the accuracy is 90.5%
 
-After predicting test set ,i test the five new images.the code is located in the 18th cell.
-Here are the results of the prediction:
+The code for predicting new images is located in the 13th~17th cell.Here are the results of the prediction:
 
-| Image			        |     Prediction	      	|   Right?  |
-|:---------------------:|:------------------| -----:| 
-| Priority Road       |  Priority Road | Right
-|Stop  			| Priority Road| Wrong
-| No Entry	      		| Dangerous curve to the left	| Wrong
-| Ahead Only      		| Ahead Only   		| Right
-| Speed limit (30km/h)		|      Dangerous curve to the left 	| Wrong
+| Image			        |     Prediction	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| Ahead Only      		| Stop sign  		| 
+| Stop  			| U-turn 			|
+| Priority Road       |			Yield |
+| General Caution	      		| Bumpy Road	|
+| children crossing			| Slippery Road      	|
 
-The accuracy is 40%,compare to the test set 96%,it is very low.But the test image count is two little, it is accident factor
 
+On the new images ,the model's accuracy is 0%。
 
 ####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction and identify where in your code softmax probabilities were outputted. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
 The code  is located in the 17th cell of the Ipython notebook.
 
-To make it easy to understand ,i make bar charts for each image's sofmax:
-![][softmax]
-We can see, the model is very confident on predicting image 1 and image 4,the largest softmax is nearly 1.0; 
-It is also very certain about image 2 ,but it is a wrong predict; 
-It is some kind of confidence  about the image 3 and image 5,all the top 5 softmax are high,but these result are wrong
+ The top five soft max probabilities were
+
+| img        	|     Top Prediction	        					|Second|Third|Fourth|Fifth| 
+|:----:|:-----:| ---| --- | --- |--|
+| Ahead Only      		| Stop ,0.74		| No entry,0.12|End of all speed and passing limits,0.09|Right-of-way at the next intersection,0.011| Speed limit (60km/h),0.007|
+| Stop  			| 		Road work,0.43	|Speed limit (80km/h),0.13|Right-of-way at the next intersection,0.12|Priority road,0.11|Dangerous curve to the right,0.046|
+| Priority Road       |			Right-of-way at the next intersection,0.32|Priority road,0.14|Speed limit (60km/h),0.13|Speed limit (80km/h),0.13|Stop,0.10|
+| General Caution	      		| Speed limit (80km/h),0.26	|Priority road,0.17|Dangerous curve to the right,0.08|Road work,0.09|No passing for vehicles over 3.5 metric tons,0.06
+| children crossing			| Stop,0.43|      Speed limit (60km/h),0.29	|Speed limit (80km/h),0.13|No entry,0.04|End of all speed and passing limits,0.04|
+
+The model is not sure about the result ,because the largest probability is not dominated.And when i try multly time on the new imgs ,i can get different result,it is confusing,i have not understand why can this 
